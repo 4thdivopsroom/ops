@@ -849,6 +849,89 @@ body.light {
   color: var(--gold);
 }
 .uimp-confirm-matches { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Per-day summary table — capped to 5 visible day-columns, scrolls right for more */
+.uimp-summary { margin-top: 2px; }
+.uimp-summary-hdr { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.uimp-summary-title {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3);
+}
+.uimp-summary-hint {
+  font-family: var(--mono); font-size: 8px; color: var(--wa-green); opacity: 0.75; flex: 1;
+}
+.uimp-summary-toggle {
+  background: none; border: 1px solid var(--border2); border-radius: 6px; color: var(--text2);
+  font-family: var(--mono); font-size: 8px; font-weight: 600; padding: 3px 8px; cursor: pointer;
+  transition: all 0.15s; letter-spacing: 0.03em; flex-shrink: 0;
+}
+.uimp-summary-toggle:hover { border-color: rgba(37,211,102,0.4); color: var(--wa-green); }
+.uimp-summary-toggle.expanded { background: var(--wa-green-bg); border-color: var(--wa-green-border); color: var(--wa-green); }
+.uimp-summary-scroll {
+  overflow-x: auto; border-radius: 8px; border: 1px solid var(--border2);
+  background: var(--surface); max-width: calc(66px + 5 * 62px);
+  scrollbar-width: thin; scrollbar-color: rgba(37,211,102,0.25) transparent;
+}
+.uimp-summary-table th:first-child, .uimp-summary-table td:first-child { width: 66px; }
+.uimp-summary-scroll::-webkit-scrollbar { height: 5px; }
+.uimp-summary-scroll::-webkit-scrollbar-thumb { background: rgba(37,211,102,0.25); border-radius: 3px; }
+.uimp-summary-table { border-collapse: collapse; table-layout: fixed; width: max-content; }
+.uimp-summary-table th, .uimp-summary-table td {
+  font-family: var(--mono); text-align: center; white-space: nowrap;
+  padding: 6px 4px; border-bottom: 1px solid var(--border);
+}
+.uimp-summary-table th:first-child, .uimp-summary-table td:first-child {
+  position: sticky; left: 0; z-index: 1; text-align: left;
+  background: var(--surface2); border-right: 1px solid var(--border2);
+  padding-left: 8px; padding-right: 10px;
+  color: var(--text3); font-size: 8px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.uimp-summary-table th { color: var(--text2); font-size: 9px; font-weight: 700; background: var(--surface2); }
+.uimp-summary-table th.uimp-sum-daycol { min-width: 62px; }
+.uimp-summary-table td { color: var(--text); font-size: 10px; }
+.uimp-summary-table tr:last-child th, .uimp-summary-table tr:last-child td { border-bottom: none; }
+.uimp-summary-daydate { display: block; font-size: 10px; font-weight: 700; color: var(--text); }
+.uimp-summary-daytype { display: block; font-size: 7px; margin-top: 2px; letter-spacing: 0.06em; }
+.uimp-summary-daytype.oh { color: var(--wa-green); }
+.uimp-summary-daytype.rdr { color: var(--day); }
+.uimp-summary-daytype.both { color: var(--purple); }
+.uimp-sum-badge {
+  display: inline-block; min-width: 16px; padding: 2px 5px; border-radius: 20px;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  background: rgba(37,211,102,0.12); color: var(--wa-green);
+}
+.uimp-sum-badge.zero { background: none; color: var(--text3); font-weight: 400; }
+.uimp-sum-flag { font-size: 9px; }
+.uimp-sum-flag.new { color: var(--wa-green); }
+.uimp-sum-flag.overwrite { color: var(--gold); }
+
+/* Expanded personnel detail — one stacked list of name+status per day column */
+.uimp-sum-people { display: flex; flex-direction: column; gap: 5px; padding: 6px 4px; align-items: stretch; }
+.uimp-sum-person { display: flex; flex-direction: column; gap: 2px; padding-bottom: 5px; border-bottom: 1px dashed var(--border); }
+.uimp-sum-person:last-child { border-bottom: none; padding-bottom: 0; }
+.uimp-sum-pname {
+  font-family: var(--sans); font-size: 8px; font-weight: 600; color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 76px; text-align: left;
+}
+.uimp-sum-pstatus {
+  font-family: var(--mono); font-size: 8px; font-weight: 700; align-self: flex-start;
+  padding: 1px 5px; border-radius: 4px; letter-spacing: 0.02em;
+}
+.uimp-sum-pstatus.tier-in { color: var(--green); }
+.uimp-sum-pstatus.tier-out { color: var(--red); }
+.uimp-sum-pstatus.tier-warn {
+  color: #f59e0b; background: rgba(245,158,11,0.14);
+  outline: 1px solid rgba(245,158,11,0.4); font-weight: 700;
+}
+.uimp-sum-people-empty { font-family: var(--mono); font-size: 8px; color: var(--text3); padding: 6px 4px; }
+.uimp-sum-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; padding: 0 2px; }
+.uimp-sum-legend-item { display: flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 8px; color: var(--text3); }
+.uimp-sum-legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.uimp-sum-legend-dot.in { background: var(--green); }
+.uimp-sum-legend-dot.out { background: var(--red); }
+.uimp-sum-legend-dot.warn { background: #f59e0b; box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+
 .uimp-confirm-btns { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
 .uimp-confirm-go {
   background: linear-gradient(135deg, var(--wa-green-dark), var(--wa-green));
@@ -1197,11 +1280,27 @@ body.light {
 .ex-src-btn.active-both{background:var(--purple-bg);border:1px solid rgba(167,139,250,0.4);color:var(--purple)}
 .ex-range-display{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;
   background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius)}
-.ex-range-slot{display:flex;flex-direction:column;gap:2px;flex:1}
+.ex-range-slot{display:flex;flex-direction:column;gap:2px;flex:1;position:relative;padding:4px 8px 4px 22px;
+  border-radius:8px;border:1px solid transparent;transition:all 0.2s}
+.ex-range-step{position:absolute;left:2px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;border-radius:50%;background:var(--surface3);color:var(--text3);
+  font-family:var(--mono);font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;border:1px solid var(--border2)}
 .ex-range-lbl{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3)}
 .ex-range-val{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--purple);letter-spacing:0.02em}
 .ex-range-val.empty{color:var(--text3);font-weight:400}
-.ex-range-arrow{font-family:var(--mono);font-size:14px;color:var(--purple);opacity:0.5;flex-shrink:0}
+.ex-range-arrow{font-family:var(--mono);font-size:14px;color:var(--purple);opacity:0.5;flex-shrink:0;transition:opacity 0.2s,transform 0.2s}
+.ex-range-arrow.active{opacity:1;transform:scale(1.15);color:var(--purple)}
+@keyframes exSlotPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,0.35);border-color:rgba(167,139,250,0.55)}
+  50%{box-shadow:0 0 0 5px rgba(167,139,250,0);border-color:rgba(167,139,250,0.85)}
+}
+.ex-range-slot.active{background:var(--purple-bg);border-color:rgba(167,139,250,0.55);
+  animation:exSlotPulse 1.6s ease-in-out infinite}
+.ex-range-slot.active .ex-range-step{background:var(--purple);border-color:var(--purple);color:#fff}
+.ex-range-slot.active .ex-range-lbl{color:var(--purple)}
+.ex-range-slot.done .ex-range-step{background:rgba(52,211,153,0.18);border-color:rgba(52,211,153,0.5);color:transparent;font-size:0}
+.ex-range-slot.done .ex-range-step::after{content:'✓';color:var(--green);font-size:9px}
 .ex-range-clear{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;
   padding:2px 5px;border-radius:4px;transition:all 0.15s;flex-shrink:0;display:none}
 .ex-range-clear.visible{display:block}
@@ -1221,9 +1320,12 @@ body.light {
 .ex-cal-day:not(.no-data):not(.empty):hover{border-color:rgba(167,139,250,0.45);background:var(--purple-bg);color:var(--purple)}
 .ex-cal-day.empty{border:none;cursor:default;pointer-events:none}
 .ex-cal-day.today-ex{box-shadow:0 0 0 1px rgba(167,139,250,0.4)}
-.ex-cal-day.range-start{background:rgba(167,139,250,0.25);border-color:rgba(167,139,250,0.7);color:var(--purple);font-weight:700;box-shadow:0 0 0 2px rgba(167,139,250,0.2)}
-.ex-cal-day.range-end{background:rgba(167,139,250,0.25);border-color:rgba(167,139,250,0.7);color:var(--purple);font-weight:700;box-shadow:0 0 0 2px rgba(167,139,250,0.2)}
-.ex-cal-day.in-range{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.25);color:var(--purple)}
+.ex-cal-day.range-start{background:rgba(167,139,250,0.28);border-color:rgba(167,139,250,0.75);color:var(--purple);font-weight:700;
+  box-shadow:0 0 0 2px rgba(167,139,250,0.25);border-radius:6px 3px 3px 6px}
+.ex-cal-day.range-end{background:rgba(167,139,250,0.28);border-color:rgba(167,139,250,0.75);color:var(--purple);font-weight:700;
+  box-shadow:0 0 0 2px rgba(167,139,250,0.25);border-radius:3px 6px 6px 3px}
+.ex-cal-day.range-start.range-end{border-radius:6px}
+.ex-cal-day.in-range{background:rgba(167,139,250,0.13);border-color:rgba(167,139,250,0.3);color:var(--purple);border-radius:3px}
 .ex-cal-day.has-dot::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
   width:3px;height:3px;border-radius:50%;background:var(--purple);opacity:0.7}
 .ex-hint{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:14px;
@@ -1475,6 +1577,23 @@ input[type="date"]:focus{border-color:var(--border3)}
               <div class="uimp-confirm-inner">
                 <div class="uimp-confirm-dates" id="uimp-confirm-dates"></div>
                 <div class="uimp-confirm-matches" id="uimp-confirm-matches"></div>
+                <!-- Per-day summary table. Shows at most 5 day-columns at once;
+                     if more days were pasted in, the table scrolls horizontally. -->
+                <div class="uimp-summary" id="uimp-summary" style="display:none">
+                  <div class="uimp-summary-hdr">
+                    <span class="uimp-summary-title">Day summary</span>
+                    <span class="uimp-summary-hint" id="uimp-summary-hint"></span>
+                    <button class="uimp-summary-toggle" id="uimp-summary-toggle" onclick="uimpToggleSummaryDetail()">▸ Show personnel</button>
+                  </div>
+                  <div class="uimp-summary-scroll" id="uimp-summary-scroll">
+                    <table class="uimp-summary-table" id="uimp-summary-table"></table>
+                  </div>
+                  <div class="uimp-sum-legend" id="uimp-sum-legend" style="display:none">
+                    <span class="uimp-sum-legend-item"><span class="uimp-sum-legend-dot in"></span>In</span>
+                    <span class="uimp-sum-legend-item"><span class="uimp-sum-legend-dot out"></span>Out</span>
+                    <span class="uimp-sum-legend-item"><span class="uimp-sum-legend-dot warn"></span>Manual confirmation</span>
+                  </div>
+                </div>
                 <div class="uimp-confirm-btns">
                   <button class="uimp-confirm-go" id="uimp-confirm-go" onclick="uimpConfirm()">✓ Save to Calendar</button>
                   <button class="uimp-confirm-cancel" onclick="uimpDismissConfirm()">Cancel</button>
@@ -1637,9 +1756,9 @@ input[type="date"]:focus{border-color:var(--border3)}
       <button class="ex-src-btn" id="ex-src-both" onclick="setExSrc('both')">Both</button>
     </div>
     <div class="ex-range-display" id="ex-range-display">
-      <div class="ex-range-slot" id="ex-range-start"><span class="ex-range-lbl">FROM</span><span class="ex-range-val" id="ex-start-val">—</span></div>
-      <div class="ex-range-arrow">→</div>
-      <div class="ex-range-slot" id="ex-range-end"><span class="ex-range-lbl">TO</span><span class="ex-range-val" id="ex-end-val">—</span></div>
+      <div class="ex-range-slot" id="ex-range-start"><span class="ex-range-step">1</span><span class="ex-range-lbl">FROM</span><span class="ex-range-val" id="ex-start-val">—</span></div>
+      <div class="ex-range-arrow" id="ex-range-arrow">→</div>
+      <div class="ex-range-slot" id="ex-range-end"><span class="ex-range-step">2</span><span class="ex-range-lbl">TO</span><span class="ex-range-val" id="ex-end-val">—</span></div>
       <button class="ex-range-clear" id="ex-range-clear-btn" onclick="exClearRange()" title="Clear range">✕</button>
     </div>
     <div class="ex-sub" id="ex-sub">Click to set start date, then end date.</div>
@@ -3338,6 +3457,130 @@ function uimpRefreshCalPreview(){
   if(hint)hint.textContent=total+' block'+(total!==1?'s':'')+' ready';
 }
 
+function uimpStatusTier(raw, isRdr){
+  const v=(raw||'').trim();
+  if(!v) return{display:'',tier:'empty'};
+  if(isRdr){
+    const disp=rdrDisplayStatus(v);
+    if(/^IN\b/i.test(disp)) return{display:disp,tier:'in'};
+    if(/^OFF$/i.test(disp)||/^(MC|RS|HL)$/i.test(disp)) return{display:disp,tier:'out'};
+    return{display:disp,tier:'warn'};
+  }
+  const parsed=parseStatus(v);
+  const cls=statusClass(parsed);
+  if(cls==='s-in') return{display:parsed,tier:'in'};
+  if(cls==='s-out'||cls==='s-ado') return{display:parsed,tier:'out'};
+  if(cls==='s-empty') return{display:parsed,tier:'empty'};
+  return{display:parsed,tier:'warn'}; // s-part / s-warn — needs manual confirmation
+}
+
+function uimpComputeDaySummary(){
+  const ohSaved=JSON.parse(localStorage.getItem(SAVED_LS)||'{}');
+  const rdrSaved=JSON.parse(localStorage.getItem(RDR_SAVED_LS)||'{}');
+  const RANK=/^(CPL|LCP|PTE|SGT|SSG|MSG|WO[12]?|LTA|CPT|MAJ|LTC|COL|ME\d?)\s+/i;
+  const days={};
+  function ensure(key){ if(!days[key])days[key]={key,oh:0,rdr:0,ohEx:false,rdrEx:false,people:[]}; return days[key]; }
+  _uimpBlocks.forEach(e=>{
+    (e.ohBlocks||[]).forEach(b=>{
+      const d=ensure(b.date.key);
+      let n=0;
+      (b.lines||[]).forEach(line=>{
+        const clean=line.trim();if(!clean)return;
+        const sep=clean.match(/^(.+?)\s*[-\u2013]\s*(.+)$/);
+        if(sep&&RANK.test(sep[1].trim())){
+          n++;
+          const info=uimpStatusTier(sep[2],false);
+          d.people.push({name:sep[1].trim(),display:info.display,tier:info.tier});
+        }
+      });
+      d.oh+=n;
+      d.ohEx=d.ohEx||!!(ohSaved[b.date.key]&&ohSaved[b.date.key].statuses&&Object.values(ohSaved[b.date.key].statuses).some(v=>v&&v.trim()));
+    });
+    (e.rdrBlocks||[]).forEach(b=>{
+      const d=ensure(b.hdr.key);
+      let n=0;
+      (b.lines||[]).forEach(line=>{
+        const clean=line.trim();if(!clean||/^attendance/i.test(clean))return;
+        const sep=clean.match(/^(.+?)\s*[-\u2013]\s*(.+)$/);
+        if(sep){
+          n++;
+          const info=uimpStatusTier(sep[2],true);
+          d.people.push({name:rdrStripEmoji(sep[1]).trim(),display:info.display,tier:info.tier});
+        }
+      });
+      d.rdr+=n;
+      d.rdrEx=d.rdrEx||!!(rdrSaved[b.hdr.key]&&rdrSaved[b.hdr.key].statuses&&Object.values(rdrSaved[b.hdr.key].statuses).some(v=>v&&v.trim()));
+    });
+  });
+  return Object.values(days).sort((a,b)=>a.key<b.key?-1:1);
+}
+
+var _uimpSummaryExpanded=false;
+function uimpToggleSummaryDetail(){
+  _uimpSummaryExpanded=!_uimpSummaryExpanded;
+  uimpRenderSummaryTable();
+}
+
+function uimpRenderSummaryTable(){
+  const wrap=document.getElementById('uimp-summary');
+  const tbl=document.getElementById('uimp-summary-table');
+  const hint=document.getElementById('uimp-summary-hint');
+  const toggleBtn=document.getElementById('uimp-summary-toggle');
+  const legend=document.getElementById('uimp-sum-legend');
+  if(!wrap||!tbl)return;
+  const days=uimpComputeDaySummary();
+  if(!days.length){wrap.style.display='none';tbl.innerHTML='';return;}
+  wrap.style.display='';
+  hint.textContent=days.length>5?(days.length+' days · scroll to see all →'):(days.length+' day'+(days.length>1?'s':''));
+  if(toggleBtn){
+    toggleBtn.textContent=(_uimpSummaryExpanded?'▾ Hide personnel':'▸ Show personnel');
+    toggleBtn.className='uimp-summary-toggle'+(_uimpSummaryExpanded?' expanded':'');
+  }
+  if(legend)legend.style.display=_uimpSummaryExpanded?'':'none';
+
+  const dayLbl=k=>{const[y,m,d]=k.split('-');return d+'/'+m;};
+
+  let html='<tr><th></th>';
+  days.forEach(d=>{
+    const type=(d.oh&&d.rdr)?'both':(d.rdr?'rdr':'oh');
+    const typeLbl=(d.oh&&d.rdr)?'OH + RDR':(d.rdr?'RDR':'OH');
+    html+=`<th class="uimp-sum-daycol"><span class="uimp-summary-daydate">${dayLbl(d.key)}</span><span class="uimp-summary-daytype ${type}">${typeLbl}</span></th>`;
+  });
+  html+='</tr>';
+
+  html+='<tr><th style="text-align:left">People</th>';
+  days.forEach(d=>{
+    const total=d.oh+d.rdr;
+    html+=`<td><span class="uimp-sum-badge${total?'':' zero'}">${total}</span></td>`;
+  });
+  html+='</tr>';
+
+  html+='<tr><th style="text-align:left">Status</th>';
+  days.forEach(d=>{
+    const overwrite=d.ohEx||d.rdrEx;
+    html+=`<td><span class="uimp-sum-flag ${overwrite?'overwrite':'new'}">${overwrite?'⚠ overwrite':'✓ new'}</span></td>`;
+  });
+  html+='</tr>';
+
+  if(_uimpSummaryExpanded){
+    html+='<tr class="uimp-sum-detail-row"><th style="text-align:left;vertical-align:top">Personnel</th>';
+    days.forEach(d=>{
+      const people=[...d.people].sort((a,b)=>a.name<b.name?-1:1);
+      if(!people.length){
+        html+='<td><div class="uimp-sum-people-empty">—</div></td>';
+        return;
+      }
+      const rows=people.map(p=>
+        `<div class="uimp-sum-person"><span class="uimp-sum-pname" title="${p.name}">${p.name}</span><span class="uimp-sum-pstatus tier-${p.tier}">${p.display||'—'}</span></div>`
+      ).join('');
+      html+=`<td style="vertical-align:top"><div class="uimp-sum-people">${rows}</div></td>`;
+    });
+    html+='</tr>';
+  }
+
+  tbl.innerHTML=html;
+}
+
 function uimpBuildConfirm(){
   if(!_uimpBlocks.length)return;
   const ohSaved=JSON.parse(localStorage.getItem(SAVED_LS)||'{}');
@@ -3378,6 +3621,7 @@ function uimpBuildConfirm(){
       matchesDiv.appendChild(chip);
     });
   }
+  uimpRenderSummaryTable();
   const confirm=document.getElementById('uimp-confirm');
   if(confirm)confirm.style.display='';
 }
@@ -3495,6 +3739,9 @@ function uimpClear(){
   const empty=document.getElementById('uimp-empty');
   if(feed)[...feed.querySelectorAll('.uimp-bubble')].forEach(b=>b.remove());
   if(empty)empty.style.display='';
+  const sumWrap=document.getElementById('uimp-summary');
+  if(sumWrap)sumWrap.style.display='none';
+  _uimpSummaryExpanded=false;
   uimpDismissConfirm();
   const hdr=document.getElementById('uimp-hdr');
   const hint=document.getElementById('uimp-hdr-hint');
@@ -3616,9 +3863,16 @@ function exFmtDisplay(key){
 function exUpdateRangeDisplay(){
   const sv=document.getElementById('ex-start-val'),ev=document.getElementById('ex-end-val');
   const clrBtn=document.getElementById('ex-range-clear-btn');
+  const startSlot=document.getElementById('ex-range-start'),endSlot=document.getElementById('ex-range-end');
+  const arrow=document.getElementById('ex-range-arrow');
   if(sv){sv.textContent=exPickStart?exFmtDisplay(exPickStart):'—';sv.className='ex-range-val'+(exPickStart?'':' empty');}
   if(ev){ev.textContent=exPickEnd?exFmtDisplay(exPickEnd):'—';ev.className='ex-range-val'+(exPickEnd?'':' empty');}
   if(clrBtn)clrBtn.className='ex-range-clear'+(exPickStart?' visible':'');
+  // Make it obvious which slot the next click will fill: pulse the active
+  // one, tick off the ones already set.
+  if(startSlot)startSlot.className='ex-range-slot'+(!exPickStart?' active':' done');
+  if(endSlot)endSlot.className='ex-range-slot'+(exPickStart&&!exPickEnd?' active':(exPickEnd?' done':''));
+  if(arrow)arrow.className='ex-range-arrow'+(exPickStart&&!exPickEnd?' active':'');
 }
 function exClearRange(){exPickStart=null;exPickEnd=null;exBuildPicker();}
 
@@ -3645,8 +3899,8 @@ function openExportModal(){
   const allKeys=[...new Set([...Object.keys(ohAll),...Object.keys(rdrAll)])].sort();
   if(!allKeys.length){showToast('No calendar data to export yet.');return;}
   exPickStart=null;exPickEnd=null;
-  const ld=dateFromKey(allKeys[allKeys.length-1]);
-  exViewMonth=ld.getMonth();exViewYear=ld.getFullYear();
+  const today=new Date();
+  exViewMonth=today.getMonth();exViewYear=today.getFullYear();
   document.getElementById('ex-dialog').style.display='flex';
   setExSrc(currentMode==='rdr'?'rdr':'oh');
 }
