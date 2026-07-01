@@ -511,7 +511,7 @@ body.light *{transition-property:background-color,border-color,color,box-shadow;
 
 /* COLLAPSIBLE */
 .coll{max-height:0;overflow:hidden;transition:max-height 0.35s ease}
-.coll.op{max-height:1400px}
+.coll.op{max-height:3200px}
 .col-hdr{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .chev{font-family:var(--mono);font-size:12px;color:var(--text3);transition:transform 0.2s;display:inline-block}
 
@@ -1355,7 +1355,7 @@ input[type="date"]:focus{border-color:var(--border3)}
     <button class="mode-btn" id="btn-rdr" onclick="setMode('rdr')">RDR</button>
   </div>
   <div class="t-right">
-    <div class="sync-pill offline" id="sync-pill" data-clickable onclick="toggleSyncPause()" title="Click to pause/resume Firebase sync"><span class="sdot2"></span><span id="sync-txt">local</span></div>
+    <div class="sync-pill offline" id="sync-pill" data-clickable onclick="toggleSyncPause()" title="Local storage only — click to set up Firebase sync (optional)"><span class="sdot2"></span><span id="sync-txt">local</span></div>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
     <div class="t-clock" id="t-clock">00:00:00</div>
   </div>
@@ -1491,14 +1491,19 @@ input[type="date"]:focus{border-color:var(--border3)}
     <div>
       <!-- PERSONNEL WIDGET -->
       <div class="widget">
-        <div class="wh"><span class="wh-t">Personnel</span><span class="badge b-ok" id="r-badge">ready</span></div>
-        <div class="wb">
-          <div class="rmeta"><div class="rdot" id="rdot"></div><span id="r-st">loaded</span></div>
-          <div id="plist"></div>
-          <div class="topanel">
-            <div class="topanel-hdr">⏰ Time Off / Partial</div>
-            <div class="to-rows" id="to-rows"></div>
-            <button class="to-add" onclick="addToRow()">+ Add time off entry</button>
+        <div class="wh col-hdr" onclick="togCol('personnel-body','personnel-chev')">
+          <span style="display:flex;align-items:center;gap:8px"><span class="wh-t">Personnel</span><span class="badge b-ok" id="r-badge">ready</span></span>
+          <span class="chev" id="personnel-chev" style="transform:rotate(90deg)">▸</span>
+        </div>
+        <div class="coll op" id="personnel-body">
+          <div class="wb">
+            <div class="rmeta"><div class="rdot" id="rdot"></div><span id="r-st">loaded</span></div>
+            <div id="plist"></div>
+            <div class="topanel">
+              <div class="topanel-hdr">⏰ Time Off / Partial</div>
+              <div class="to-rows" id="to-rows"></div>
+              <button class="to-add" onclick="addToRow()">+ Add time off entry</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1651,20 +1656,21 @@ input[type="date"]:focus{border-color:var(--border3)}
     </div>
   </div>
 </div>
-<!-- FIRST-RUN SETUP OVERLAY — shown once if no Firebase URLs in localStorage -->
+<!-- FIREBASE CONFIG MODAL — hidden by default. App runs on localStorage only unless
+     this is opened deliberately by clicking the "local" sync pill in the topbar. -->
 <div id="setup-overlay" class="hidden">
   <div class="setup-card">
-    <h2>Firebase Setup</h2>
-    <p>Paste your Firebase Realtime Database URL below. OH and RDR share one database — data is namespaced internally. Saved to this browser only — never committed to the repo.</p>
+    <h2>Firebase Sync (optional)</h2>
+    <p>The app works fully offline on localStorage by default. Paste a Firebase Realtime Database URL below only if you want cross-device sync. OH and RDR share one database — data is namespaced internally. Saved to this browser only — never committed to the repo.</p>
     <div class="setup-field">
       <label>Firebase URL</label>
       <input id="setup-oh-url" type="url" placeholder="https://your-project-default-rtdb.region.firebasedatabase.app" />
     </div>
     <div class="setup-actions">
-      <button class="setup-save" onclick="setupSave()">Save &amp; Continue</button>
-      <button class="setup-skip" onclick="setupSkip()">Skip (offline mode)</button>
+      <button class="setup-save" onclick="setupSave()">Save &amp; Connect</button>
+      <button class="setup-skip" onclick="setupSkip()">Cancel (stay offline)</button>
     </div>
-    <p class="setup-note">URLs are stored in <code>localStorage</code> and loaded on every visit. To reset, open DevTools → Application → Local Storage and delete <code>oh_fb_url</code>.</p>
+    <p class="setup-note">URLs are stored in <code>localStorage</code> and loaded on every visit. To disconnect, clear the field and click "Save &amp; Connect", or open DevTools → Application → Local Storage and delete <code>oh_fb_url</code>.</p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -1880,13 +1886,15 @@ function setSyncUI(state,extra){
   const pill=document.getElementById('sync-pill'),txt=document.getElementById('sync-txt');
   pill.className='sync-pill '+state;
   txt.textContent=extra||{online:'synced',syncing:'syncing…',offline:'local',error:'error',paused:'paused'}[state]||state;
-  if(pill) pill.title = state==='paused' ? 'Sync paused — click to resume' : 'Click to pause sync';
+  if(pill) pill.title = state==='paused' ? 'Sync paused — click to resume'
+    : state==='offline' ? 'Local storage only — click to set up Firebase sync (optional)'
+    : 'Click to pause sync';
 }
 let syncPaused = false;
 function fbBase(){if(syncPaused)return null;return fbUrl?fbUrl.replace(/\/+$/,'')+'/oh':null}
 function toggleSyncPause(){
-  // Only meaningful when Firebase is configured
-  if(!fbUrl) return;
+  // No Firebase configured yet — offer the (optional) sync setup instead of a no-op
+  if(!fbUrl){ openFbSetup(); return; }
   syncPaused = !syncPaused;
   if(syncPaused){
     // Close all active SSE streams
@@ -4926,24 +4934,24 @@ function init(){
   if (saved === 'light') applyTheme(true);
 })();
 
-/* ── FIRST-RUN SETUP ─────────────────────────────────────────── */
-(function(){
-  const ohUrl = localStorage.getItem('oh_fb_url') || '';
-  if(!ohUrl){
-    document.getElementById('setup-overlay').classList.remove('hidden');
-  }
-})();
+/* ── FIREBASE CONFIG MODAL (on-demand only) ──────────────────────
+   No auto-prompt on load — localStorage is the default and the app
+   runs fully offline. This modal only opens when the user clicks the
+   "local" sync pill in the topbar, i.e. it's a deliberate opt-in. */
+function openFbSetup(){
+  const inp = document.getElementById('setup-oh-url');
+  if(inp) inp.value = localStorage.getItem('oh_fb_url') || '';
+  document.getElementById('setup-overlay').classList.remove('hidden');
+}
 
 function setupSave(){
   const url = document.getElementById('setup-oh-url').value.trim();
-  if(url) localStorage.setItem('oh_fb_url', url);
+  localStorage.setItem('oh_fb_url', url);
   document.getElementById('setup-overlay').classList.add('hidden');
   location.reload();
 }
 
 function setupSkip(){
-  // Mark as seen so overlay doesn't re-appear; app runs offline
-  localStorage.setItem('oh_fb_url', '');
   document.getElementById('setup-overlay').classList.add('hidden');
 }
 
